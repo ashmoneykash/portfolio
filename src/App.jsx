@@ -13,6 +13,8 @@ import ngHome     from "./assets/nexgen/ng-home.png";
 import ngProducts from "./assets/nexgen/ng-products.png";
 import ngContact  from "./assets/nexgen/ng-contact.png";
 import ngLogin    from "./assets/nexgen/ng-login.png";
+import certPython from "./assets/cert-python.png";
+import certJava   from "./assets/cert-java.png";
 
 /* ── Palette ── */
 const LIME = "#B8FF1A";
@@ -900,6 +902,25 @@ function Achievements() {
 
 /* ── Education ── */
 function Education() {
+  const [activeCert, setActiveCert] = useState(null);
+
+  const CERTS = [
+    {
+      title: "The Complete Python Pro Bootcamp",
+      issuer: "Udemy",
+      date: "February 2026",
+      img: certPython,
+      color: LIME,
+    },
+    {
+      title: "Advance Java with GUI",
+      issuer: "CSE Pathshala",
+      date: "August 2025",
+      img: certJava,
+      color: "#00d4ff",
+    },
+  ];
+
   return (
     <section id="education" style={{ padding: "120px 80px", position: "relative", zIndex: 10 }}>
       <div style={{ maxWidth: 1160, margin: "0 auto" }}>
@@ -911,9 +932,11 @@ function Education() {
             </h2>
           </div>
         </FU>
+
+        {/* Timeline */}
         <FU delay={0.15}>
           <div style={{ display: "flex", gap: 40 }}>
-            <div style={{ width: 1, background: `linear-gradient(180deg, ${LIME} 0%, transparent 100%)`, flexShrink: 0, position: "relative", marginTop: 8 }}>
+            <div style={{ width: 1, background: `linear-gradient(180deg, ${LIME} 0%, rgba(255,255,255,0.1) 100%)`, flexShrink: 0, position: "relative", marginTop: 8 }}>
               <div style={{ width: 12, height: 12, borderRadius: "50%", background: LIME, position: "absolute", top: 0, left: -5.5, boxShadow: `0 0 20px ${LIME}` }} />
             </div>
             <div style={{ flex: 1, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "44px 40px" }}>
@@ -938,20 +961,144 @@ function Education() {
             </div>
             <div style={{ flex: 1, background: "rgba(255,255,255,0.015)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 12, padding: "44px 40px" }}>
               <div style={{ fontFamily: "IBM Plex Mono", fontSize: 10, color: "rgba(255,255,255,0.35)", letterSpacing: 2, marginBottom: 12 }}>2020 → 2022</div>
-              <h3 style={{ fontFamily: "Bebas Neue", fontSize: "clamp(28px, 4vw, 52px)", letterSpacing: 3, margin: "0 0 12px", color: "rgba(255,255,255,0.75)" }}>
+              <h3 style={{ fontFamily: "Bebas Neue", fontSize: "clamp(28px, 4vw, 52px)", letterSpacing: 3, margin: "0 0 12px", color: "#fff" }}>
                 ARMY PUBLIC SCHOOL KALUCHAK
               </h3>
-              <div style={{ fontFamily: "Syne", fontWeight: 600, fontSize: 17, color: "rgba(255,255,255,0.4)", marginBottom: 16 }}>
+              <div style={{ fontFamily: "Syne", fontWeight: 600, fontSize: 17, color: "rgba(255,255,255,0.7)", marginBottom: 16 }}>
                 Higher Secondary — Science (PCM + CS)
               </div>
-              <p style={{ opacity: 0.35, lineHeight: 1.75, fontSize: 13.5, maxWidth: 480 }}>
+              <p style={{ opacity: 0.55, lineHeight: 1.75, fontSize: 13.5, maxWidth: 480 }}>
                 Completed senior secondary education with Physics, Chemistry, Mathematics and Computer Science, building the foundation for engineering studies.
               </p>
             </div>
           </div>
         </FU>
+
+        {/* Certificates */}
+        <FU delay={0.3}>
+          <div style={{ marginTop: 72 }}>
+            <div style={{ fontFamily: "IBM Plex Mono", fontSize: 10, color: "#fff", letterSpacing: 3, marginBottom: 28, fontWeight: 700 }}>
+              ◆ CERTIFICATIONS
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+              {CERTS.map((cert, i) => (
+                <CertCard key={i} cert={cert} onOpen={() => setActiveCert(cert)} />
+              ))}
+            </div>
+          </div>
+        </FU>
       </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {activeCert && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActiveCert(null)}
+            style={{ position: "fixed", inset: 0, zIndex: 900, background: "rgba(0,0,0,0.88)", backdropFilter: "blur(20px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 40 }}
+          >
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0, y: 24 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.92, opacity: 0, y: 24 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              onClick={e => e.stopPropagation()}
+              style={{ maxWidth: 860, width: "100%", borderRadius: 16, overflow: "hidden", border: `1px solid ${activeCert.color}30`, boxShadow: `0 0 80px ${activeCert.color}18` }}
+            >
+              {/* Lightbox top bar */}
+              <div style={{ background: "rgba(10,10,10,0.98)", padding: "14px 22px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `1px solid rgba(255,255,255,0.05)` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <div style={{ display: "flex", gap: 6 }}>
+                    {["#ff5f57","#febc2e","#28c840"].map(c => <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />)}
+                  </div>
+                  <span style={{ fontFamily: "IBM Plex Mono", fontSize: 10, color: "rgba(255,255,255,0.3)", letterSpacing: 1 }}>{activeCert.issuer} · {activeCert.date}</span>
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.94 }}
+                  onClick={() => setActiveCert(null)}
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", width: 30, height: 30, color: "#fff", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center" }}
+                >✕</motion.button>
+              </div>
+              {/* Certificate image */}
+              <img
+                src={activeCert.img}
+                style={{ width: "100%", display: "block" }}
+              />
+              {/* Bottom label */}
+              <div style={{ background: "rgba(10,10,10,0.98)", padding: "16px 22px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `1px solid rgba(255,255,255,0.05)` }}>
+                <span style={{ fontFamily: "Bebas Neue", fontSize: 18, letterSpacing: 3, color: activeCert.color }}>{activeCert.title}</span>
+                <span style={{ fontFamily: "IBM Plex Mono", fontSize: 9, color: "rgba(255,255,255,0.25)", letterSpacing: 2 }}>VERIFIED CERTIFICATE</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
+  );
+}
+
+function CertCard({ cert, onOpen }) {
+  const [hov, setHov] = useState(false);
+
+  return (
+    <motion.div
+      onHoverStart={() => setHov(true)}
+      onHoverEnd={() => setHov(false)}
+      whileHover={{ y: -5 }}
+      onClick={onOpen}
+      data-cur="View"
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      style={{ borderRadius: 12, overflow: "hidden", border: `1px solid ${hov ? cert.color + "40" : "rgba(255,255,255,0.06)"}`, background: "#080808", transition: "border-color 0.3s" }}
+    >
+      {/* Image preview */}
+      <div style={{ position: "relative", height: 350, overflow: "hidden" }}>
+        <motion.img
+          animate={{ scale: hov ? 1.04 : 1 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          src={cert.img}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }}
+        />
+        {/* Gradient overlay */}
+        <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent 40%, rgba(8,8,8,0.92) 100%)` }} />
+        {/* Color tint on hover */}
+        <motion.div
+          animate={{ opacity: hov ? 1 : 0 }}
+          style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg, ${cert.color}12, transparent 60%)`, pointerEvents: "none" }}
+        />
+        {/* "View" badge */}
+        <AnimatePresence>
+          {hov && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.88 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.88 }}
+              transition={{ duration: 0.2 }}
+              style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", background: "rgba(0,0,0,0.72)", backdropFilter: "blur(10px)", border: `1px solid ${cert.color}55`, borderRadius: 8, padding: "8px 18px", fontFamily: "IBM Plex Mono", fontSize: 10, color: cert.color, letterSpacing: 2, whiteSpace: "nowrap" }}
+            >
+              ▶ VIEW CERTIFICATE
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Info strip */}
+      <div style={{ padding: "16px 20px 18px", position: "relative" }}>
+        <motion.div
+          animate={{ width: hov ? "100%" : "0%" }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          style={{ position: "absolute", top: 0, left: 0, height: 1, background: cert.color, borderRadius: 1 }}
+        />
+        <div style={{ fontFamily: "IBM Plex Mono", fontSize: 9, color: `${cert.color}88`, letterSpacing: 2, marginBottom: 6 }}>
+          {cert.issuer.toUpperCase()} · {cert.date.toUpperCase()}
+        </div>
+        <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 15, color: "#fff", lineHeight: 1.3 }}>
+          {cert.title}
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
