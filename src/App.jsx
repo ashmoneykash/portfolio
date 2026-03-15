@@ -9,6 +9,10 @@ import {
   useInView,
 } from "framer-motion";
 import ayushImg from "./assets/AYUSH.png";
+import ngHome     from "./assets/nexgen/ng-home.png";
+import ngProducts from "./assets/nexgen/ng-products.png";
+import ngContact  from "./assets/nexgen/ng-contact.png";
+import ngLogin    from "./assets/nexgen/ng-login.png";
 
 /* ── Palette ── */
 const LIME = "#B8FF1A";
@@ -228,18 +232,21 @@ function Nav({ show }) {
     >
       <span style={{ fontFamily: "Bebas Neue", fontSize: 22, color: LIME, letterSpacing: 5 }}>ASHMONEYKASH</span>
       <div style={{ display: "flex", gap: 36 }}>
-        {["About", "Work", "Skills", "Contact"].map(item => (
-          <a
-            key={item}
-            href={`#${item.toLowerCase()}`}
-            data-cur={item}
-            style={{ color: "rgba(255,255,255,0.55)", textDecoration: "none", fontFamily: "IBM Plex Mono", fontSize: 11, letterSpacing: 2, transition: "color 0.3s" }}
-            onMouseEnter={e => (e.target.style.color = LIME)}
-            onMouseLeave={e => (e.target.style.color = "rgba(255,255,255,0.55)")}
-          >
-            {item.toUpperCase()}
-          </a>
-        ))}
+        {["About", "Work", "Skills", "Achievements", "Knowledge", "Contact"].map(item => {
+          const target = item === "Knowledge" ? "education" : item.toLowerCase();
+          return (
+            <a
+              key={item}
+              href={`#${target}`}
+              data-cur={item}
+              style={{ color: "rgba(255,255,255,0.55)", textDecoration: "none", fontFamily: "IBM Plex Mono", fontSize: 11, letterSpacing: 2, transition: "color 0.3s" }}
+              onMouseEnter={e => (e.target.style.color = LIME)}
+              onMouseLeave={e => (e.target.style.color = "rgba(255,255,255,0.55)")}
+            >
+              {item.toUpperCase()}
+            </a>
+          );
+        })}
       </div>
       <motion.button
         onClick={() => window.open("https://drive.google.com/file/d/1Fv2QDyPxeTayY3Qo9d73-rF2gWbFmnRO/view?usp=sharing", "_blank")}
@@ -488,80 +495,246 @@ function About() {
 const PROJECTS = [
   {
     name: "NexGen",
-    url: "https://nexgen-6whl.onrender.com/home/",
     sub: "E-commerce Platform",
     tech: "Django · PostgreSQL · Redis",
     desc: "Full-featured e-commerce platform with real-time inventory management, Stripe payment integration, and an analytics dashboard tracking customer behavior.",
     accent: LIME,
     bg: "linear-gradient(145deg, #090f00 0%, #050a00 100%)",
+    liveUrl: "https://nexgen-6whl.onrender.com/home/",
+    githubUrl: "https://github.com/ashmoneykash/nexgen",
+    screens: [
+      { img: ngHome,     label: "Hero",     desc: "Landing page with cinematic hero section and stats" },
+      { img: ngProducts, label: "Products", desc: "Full product grid with sorting and in-stock badges" },
+      { img: ngContact,  label: "Contact",  desc: "Contact form with info cards and social links" },
+      { img: ngLogin,    label: "Login",    desc: "Secure member access portal with animated bg" },
+    ],
   },
   {
     name: "FinanceBoard",
-    url: "https://github.com/ashmoneykash/finance-dashboard",
     sub: "Expense Tracker",
     tech: "Flask · SQLAlchemy · Chart.js",
-    desc: "Intelligent personal finance tracker with ML-powered spending insights.",
+    desc: "Intelligent personal finance tracker with ML-powered spending insights and interactive charts.",
     accent: VIOLET,
     bg: "linear-gradient(145deg, #0b0014 0%, #06000c 100%)",
+    liveUrl: null,
+    githubUrl: "https://github.com/ashmoneykash/finance-dashboard",
+    screens: [],
   },
   {
     name: "EVBoard",
-    url: "https://github.com/ashmoneykash/DATA-SCIENCE-PROJECT",
     sub: "EV Data Dashboard",
     tech: "Python · Pandas · Plotly",
-    desc: "Interactive analytics for EV market data with real-time trend analysis.",
+    desc: "Interactive analytics for EV market data with real-time trend analysis and filterable charts.",
     accent: "#00d4ff",
     bg: "linear-gradient(145deg, #00101a 0%, #000d14 100%)",
+    liveUrl: null,
+    githubUrl: "https://github.com/ashmoneykash/DATA-SCIENCE-PROJECT",
+    screens: [],
   },
 ];
 
-function PCard({ p, large }) {
-  const [hov, setHov] = useState(false);
+function ProjectModal({ project, onClose }) {
+  const [slide, setSlide] = useState(0);
+  const [dir, setDir] = useState(1);
+  const screens = project.screens;
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") goTo(slide + 1);
+      if (e.key === "ArrowLeft") goTo(slide - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [slide]);
+
+  const goTo = (i) => {
+    if (i < 0 || i >= screens.length) return;
+    setDir(i > slide ? 1 : -1);
+    setSlide(i);
+  };
+
+  const slideVariants = {
+    enter:  (d) => ({ x: d > 0 ? "100%" : "-100%", opacity: 0, scale: 0.96 }),
+    center: { x: 0, opacity: 1, scale: 1 },
+    exit:   (d) => ({ x: d > 0 ? "-100%" : "100%", opacity: 0, scale: 0.96 }),
+  };
 
   return (
     <motion.div
-      onClick={() => window.open(p.url, "_blank")}
-      onHoverStart={() => setHov(true)}
-      onHoverEnd={() => setHov(false)}
-      whileHover={{ scale: 1.012, y: -4 }}
-      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-      data-cur="View"
-      style={{
-        borderRadius: 12,
-        background: p.bg,
-        border: `1px solid ${p.accent}1a`,
-        padding: large ? "56px 48px" : "36px 32px",
-        height: large ? "100%" : "auto",
-        minHeight: large ? 480 : 200,
-        position: "relative",
-        overflow: "hidden",
-      }}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      transition={{ duration: 0.35 }} onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 900, background: "rgba(0,0,0,0.92)", backdropFilter: "blur(24px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}
     >
       <motion.div
-        animate={{ opacity: hov ? 1 : 0 }}
-        style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 40% 40%, ${p.accent}0e, transparent 70%)`, pointerEvents: "none" }}
-      />
-      {/* Corner bracket */}
-      <div style={{ position: "absolute", top: 0, right: 0, width: 70, height: 70, borderLeft: `1px solid ${p.accent}22`, borderBottom: `1px solid ${p.accent}22`, borderBottomLeftRadius: 10 }} />
-      <div style={{ position: "absolute", bottom: 0, left: 0, width: 40, height: 40, borderRight: `1px solid ${p.accent}15`, borderTop: `1px solid ${p.accent}15`, borderTopRightRadius: 6 }} />
-
-      <div style={{ fontFamily: "IBM Plex Mono", fontSize: 10, color: `${p.accent}88`, letterSpacing: 2, marginBottom: 14 }}>{p.tech}</div>
-      <h3 style={{ fontFamily: "Bebas Neue", fontSize: large ? "clamp(44px, 5vw, 80px)" : 42, letterSpacing: 5, margin: "0 0 6px", color: "#fff", lineHeight: 1 }}>{p.name}</h3>
-      <div style={{ fontFamily: "Syne", fontSize: 13, color: p.accent, marginBottom: large ? 22 : 0, fontWeight: 600 }}>{p.sub}</div>
-      {large && <p style={{ fontSize: 14, lineHeight: 1.8, opacity: 0.55, maxWidth: 340 }}>{p.desc}</p>}
-
-      <motion.div
-        animate={{ opacity: hov ? 1 : 0, x: hov ? 0 : 12 }}
-        transition={{ duration: 0.3 }}
-        style={{ position: "absolute", bottom: 28, right: 28, background: p.accent, color: "#000", padding: "9px 18px", borderRadius: 3, fontFamily: "IBM Plex Mono", fontSize: 10, fontWeight: 600, letterSpacing: 1 }}
+        initial={{ y: 40, opacity: 0, scale: 0.97 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 40, opacity: 0, scale: 0.97 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }} onClick={(e) => e.stopPropagation()}
+        style={{ width: "100%", maxWidth: 1100, background: "#0a0a0a", border: `1px solid ${project.accent}25`, borderRadius: 20, overflow: "hidden" }}
       >
-        VIEW →
+        {/* Top bar */}
+        <div style={{ padding: "18px 28px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(255,255,255,0.02)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ display: "flex", gap: 7 }}>
+              {["#ff5f57","#febc2e","#28c840"].map(c => <div key={c} style={{ width: 12, height: 12, borderRadius: "50%", background: c }} />)}
+            </div>
+            <div style={{ fontFamily: "IBM Plex Mono", fontSize: 11, color: "rgba(255,255,255,0.3)", letterSpacing: 1 }}>
+              {project.liveUrl || "localhost:8000"}
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            {screens.length > 0 && (
+              <div style={{ fontFamily: "IBM Plex Mono", fontSize: 10, color: project.accent, letterSpacing: 2 }}>
+                {String(slide + 1).padStart(2,"0")} / {String(screens.length).padStart(2,"0")}
+              </div>
+            )}
+            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.94 }} onClick={onClose}
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", width: 34, height: 34, color: "#fff", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</motion.button>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: screens.length > 0 ? "1fr 300px" : "1fr", minHeight: 520 }}>
+          {screens.length > 0 && (
+            <div style={{ position: "relative", background: "#050505", overflow: "hidden", borderRight: "1px solid rgba(255,255,255,0.05)" }}>
+              <AnimatePresence custom={dir} mode="wait">
+                <motion.img key={slide} custom={dir} variants={slideVariants} initial="enter" animate="center" exit="exit"
+                  transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }} src={screens[slide].img}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }} />
+              </AnimatePresence>
+              {slide > 0 && (
+                <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.94 }} onClick={() => goTo(slide - 1)}
+                  style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", width: 44, height: 44, color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)" }}>←</motion.button>
+              )}
+              {slide < screens.length - 1 && (
+                <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.94 }} onClick={() => goTo(slide + 1)}
+                  style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", width: 44, height: 44, color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)" }}>→</motion.button>
+              )}
+              <motion.div key={`lbl-${slide}`} initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
+                style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "40px 24px 20px", background: "linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%)" }}>
+                <div style={{ fontFamily: "IBM Plex Mono", fontSize: 9, color: project.accent, letterSpacing: 3, marginBottom: 4 }}>{screens[slide].label}</div>
+                <div style={{ fontFamily: "Syne", fontSize: 13, color: "rgba(255,255,255,0.6)" }}>{screens[slide].desc}</div>
+              </motion.div>
+            </div>
+          )}
+          <div style={{ padding: "32px 28px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div>
+              <div style={{ fontFamily: "IBM Plex Mono", fontSize: 10, color: `${project.accent}88`, letterSpacing: 2, marginBottom: 10 }}>{project.tech}</div>
+              <h2 style={{ fontFamily: "Bebas Neue", fontSize: 50, letterSpacing: 5, margin: "0 0 4px", color: "#fff", lineHeight: 1 }}>{project.name}</h2>
+              <div style={{ fontFamily: "Syne", fontWeight: 600, fontSize: 13, color: project.accent, marginBottom: 18 }}>{project.sub}</div>
+              <p style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.5, marginBottom: 24 }}>{project.desc}</p>
+              {screens.length > 0 && (
+                <div>
+                  <div style={{ fontFamily: "IBM Plex Mono", fontSize: 9, color: "rgba(255,255,255,0.3)", letterSpacing: 2, marginBottom: 10 }}>SCREENS</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                    {screens.map((s, i) => (
+                      <motion.div key={i} whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={() => goTo(i)} data-cur={s.label}
+                        style={{ borderRadius: 6, overflow: "hidden", border: `2px solid ${i === slide ? project.accent : "rgba(255,255,255,0.06)"}`, transition: "border-color 0.25s", position: "relative" }}>
+                        <img src={s.img} style={{ width: "100%", height: 50, objectFit: "cover", objectPosition: "top", display: "block" }} />
+                        {i === slide && <motion.div layoutId="thumb-hl" style={{ position: "absolute", inset: 0, background: `${project.accent}20`, borderRadius: 4 }} />}
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 24 }}>
+              {project.liveUrl && (
+                <motion.button whileHover={{ scale: 1.03, boxShadow: `0 0 24px ${project.accent}44` }} whileTap={{ scale: 0.97 }}
+                  onClick={() => window.open(project.liveUrl, "_blank")} data-cur="Live"
+                  style={{ background: project.accent, color: "#000", border: "none", padding: "13px 0", borderRadius: 6, fontFamily: "Syne", fontWeight: 700, fontSize: 13, letterSpacing: 1, width: "100%" }}>
+                  ↗ View Live Site
+                </motion.button>
+              )}
+              {project.githubUrl && (
+                <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  onClick={() => window.open(project.githubUrl, "_blank")} data-cur="GitHub"
+                  style={{ background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.12)", padding: "13px 0", borderRadius: 6, fontFamily: "Syne", fontWeight: 600, fontSize: 13, letterSpacing: 1, width: "100%", transition: "border-color 0.25s" }}>
+                  ◈ GitHub Repo
+                </motion.button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {screens.length > 0 && (
+          <div style={{ padding: "14px 0", display: "flex", justifyContent: "center", gap: 8, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+            {screens.map((_, i) => (
+              <motion.div key={i} animate={{ width: i === slide ? 20 : 6, background: i === slide ? project.accent : "rgba(255,255,255,0.2)" }}
+                transition={{ duration: 0.3 }} onClick={() => goTo(i)} data-cur="" style={{ height: 6, borderRadius: 3 }} />
+            ))}
+          </div>
+        )}
       </motion.div>
     </motion.div>
   );
 }
 
+function PCard({ p, large, onOpen }) {
+  const [hov, setHov] = useState(false);
+  const hasScreens = p.screens.length > 0;
+
+  return (
+    <motion.div
+      onHoverStart={() => setHov(true)} onHoverEnd={() => setHov(false)}
+      whileHover={{ scale: 1.012, y: -4 }} transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      onClick={onOpen} data-cur="Explore"
+      style={{ borderRadius: 12, background: p.bg, border: `1px solid ${p.accent}1a`, height: large ? "100%" : "auto", minHeight: large ? 480 : 220, position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}
+    >
+      {hasScreens && (
+        <div style={{ position: "relative", height: large ? 260 : 130, overflow: "hidden", flexShrink: 0 }}>
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 26, background: "rgba(0,0,0,0.8)", backdropFilter: "blur(8px)", zIndex: 2, display: "flex", alignItems: "center", padding: "0 10px", gap: 5, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+            {["#ff5f57","#febc2e","#28c840"].map(c => <div key={c} style={{ width: 8, height: 8, borderRadius: "50%", background: c, opacity: 0.75 }} />)}
+            <div style={{ marginLeft: 6, fontFamily: "IBM Plex Mono", fontSize: 9, color: "rgba(255,255,255,0.22)", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {p.liveUrl || "localhost:8000"}
+            </div>
+          </div>
+          <motion.img animate={{ scale: hov ? 1.05 : 1 }} transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            src={p.screens[0].img} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }} />
+          <motion.div animate={{ opacity: hov ? 1 : 0 }} style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, transparent 30%, ${p.accent}22 100%)`, pointerEvents: "none", zIndex: 1 }} />
+          <AnimatePresence>
+            {hov && (
+              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={{ duration: 0.22 }}
+                style={{ position: "absolute", inset: 0, zIndex: 3, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(10px)", border: `1px solid ${p.accent}44`, borderRadius: 8, padding: "9px 18px", fontFamily: "IBM Plex Mono", fontSize: 11, color: p.accent, letterSpacing: 2 }}>
+                  ▶ EXPLORE UI
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <div style={{ position: "absolute", top: 34, right: 10, zIndex: 2, background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)", border: `1px solid ${p.accent}33`, borderRadius: 4, padding: "3px 8px", fontFamily: "IBM Plex Mono", fontSize: 9, color: p.accent, letterSpacing: 1 }}>
+            {p.screens.length} screens
+          </div>
+        </div>
+      )}
+      <div style={{ padding: large ? "26px 30px 30px" : "18px 22px 22px", flex: 1, position: "relative" }}>
+        <motion.div animate={{ opacity: hov ? 1 : 0 }} style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 30% 50%, ${p.accent}08, transparent 70%)`, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: 0, right: 0, width: 50, height: 50, borderLeft: `1px solid ${p.accent}18`, borderTop: `1px solid ${p.accent}18`, borderTopLeftRadius: 8 }} />
+        <div style={{ fontFamily: "IBM Plex Mono", fontSize: 10, color: `${p.accent}77`, letterSpacing: 2, marginBottom: 8 }}>{p.tech}</div>
+        <h3 style={{ fontFamily: "Bebas Neue", fontSize: large ? "clamp(36px, 4vw, 58px)" : 38, letterSpacing: 5, margin: "0 0 4px", color: "#fff", lineHeight: 1 }}>{p.name}</h3>
+        <div style={{ fontFamily: "Syne", fontSize: 12, color: p.accent, fontWeight: 600, marginBottom: large ? 12 : 0 }}>{p.sub}</div>
+        {large && <p style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.45, maxWidth: 340 }}>{p.desc}</p>}
+        <motion.div animate={{ opacity: hov ? 1 : 0, y: hov ? 0 : 8 }} transition={{ duration: 0.3 }}
+          style={{ position: "absolute", bottom: 18, right: 18, display: "flex", gap: 7 }}>
+          {p.githubUrl && (
+            <div onClick={(e) => { e.stopPropagation(); window.open(p.githubUrl, "_blank"); }} data-cur="GitHub"
+              style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 4, padding: "6px 11px", fontFamily: "IBM Plex Mono", fontSize: 9, color: "#fff", letterSpacing: 1 }}>
+              ◈ GH
+            </div>
+          )}
+          {p.liveUrl && (
+            <div onClick={(e) => { e.stopPropagation(); window.open(p.liveUrl, "_blank"); }} data-cur="Live"
+              style={{ background: p.accent, borderRadius: 4, padding: "6px 11px", fontFamily: "IBM Plex Mono", fontSize: 9, color: "#000", fontWeight: 700, letterSpacing: 1 }}>
+              ↗ LIVE
+            </div>
+          )}
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
 function Work() {
+  const [activeProject, setActiveProject] = useState(null);
+
   return (
     <section id="work" style={{ padding: "120px 80px", position: "relative", zIndex: 10 }}>
       <div style={{ maxWidth: 1160, margin: "0 auto" }}>
@@ -573,56 +746,91 @@ function Work() {
                 SELECTED<br />PROJECTS
               </h2>
             </div>
-            <span style={{ fontFamily: "IBM Plex Mono", fontSize: 11, opacity: 0.3, letterSpacing: 1 }}>03 Projects</span>
+            <div style={{ textAlign: "right" }}>
+              <span style={{ fontFamily: "IBM Plex Mono", fontSize: 11, opacity: 0.3, letterSpacing: 1, display: "block" }}>03 Projects</span>
+              <span style={{ fontFamily: "IBM Plex Mono", fontSize: 9, color: LIME, opacity: 0.5, letterSpacing: 1 }}>Click card to explore UI</span>
+            </div>
           </div>
         </FU>
-
         <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gridTemplateRows: "auto auto", gap: 16 }}>
           <FU style={{ gridRow: "span 2" }}>
-            <PCard p={PROJECTS[0]} large />
+            <PCard p={PROJECTS[0]} large onOpen={() => setActiveProject(PROJECTS[0])} />
           </FU>
           <FU delay={0.1}>
-            <PCard p={PROJECTS[1]} large={false} />
+            <PCard p={PROJECTS[1]} large={false} onOpen={() => setActiveProject(PROJECTS[1])} />
           </FU>
           <FU delay={0.18}>
-            <PCard p={PROJECTS[2]} large={false} />
+            <PCard p={PROJECTS[2]} large={false} onOpen={() => setActiveProject(PROJECTS[2])} />
           </FU>
         </div>
       </div>
+      <AnimatePresence>
+        {activeProject && (
+          <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
 
 /* ── Skills ── */
 const SKILLS = [
-  "Python", "C++", "JavaScript", "Django",
-  "Flask", "PostgreSQL", "MySQL", "REST APIs",
-  "Git", "GitHub", "Postman", "Render",
+  { name: "Python",     color: LIME },
+  { name: "C++",        color: LIME },
+  { name: "JavaScript", color: LIME },
+  { name: "TypeScript", color: LIME },
+  { name: "Django",     color: VIOLET },
+  { name: "Flask",      color: VIOLET },
+  { name: "React.js",   color: VIOLET },
+  { name: "Node.js",    color: VIOLET },
+  { name: "PostgreSQL", color: "#00d4ff" },
+  { name: "MySQL",      color: "#00d4ff" },
+  { name: "MongoDB",    color: "#00d4ff" },
+  { name: "Redis",      color: "#00d4ff" },
+  { name: "Git",        color: "#ff6b35" },
+  { name: "Docker",     color: "#ff6b35" },
+  { name: "Postman",    color: "#ff6b35" },
+  { name: "Render",     color: "#ff6b35" },
+];
+
+const SKILL_GROUP_LABELS = [
+  { label: "Languages",  color: LIME },
+  { label: "Frameworks", color: VIOLET },
+  { label: "Databases",  color: "#00d4ff" },
+  { label: "Tools",      color: "#ff6b35" },
 ];
 
 function SkillCell({ skill, i }) {
   const [hov, setHov] = useState(false);
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+
   return (
     <motion.div
-      onHoverStart={() => setHov(true)}
-      onHoverEnd={() => setHov(false)}
-      animate={{ background: hov ? LIME : "rgba(255,255,255,0.018)" }}
-      style={{ border: "1px solid rgba(255,255,255,0.06)", borderRadius: 4, padding: "28px 22px", position: "relative", overflow: "hidden" }}
+      ref={ref}
+      initial={{ opacity: 0, y: 30, scale: 0.92 }}
+      animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{ duration: 0.55, delay: i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+      onHoverStart={() => setHov(true)} onHoverEnd={() => setHov(false)}
+      style={{ border: `1px solid ${hov ? skill.color + "60" : "rgba(255,255,255,0.06)"}`, borderRadius: 6, padding: "28px 22px", position: "relative", overflow: "hidden", transition: "border-color 0.3s" }}
     >
-      {hov && (
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          style={{ position: "absolute", inset: 0, background: LIME, zIndex: 0, borderRadius: 4 }}
-        />
-      )}
+      <motion.div animate={{ opacity: hov ? 1 : 0, scale: hov ? 1 : 0.85 }} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        style={{ position: "absolute", inset: 0, background: `${skill.color}12`, borderRadius: 6, pointerEvents: "none" }} />
+      <motion.div animate={{ opacity: hov ? 1 : 0, width: hov ? 28 : 0 }} transition={{ duration: 0.25 }}
+        style={{ position: "absolute", top: 0, right: 0, height: 2, background: skill.color, borderRadius: 1 }} />
+      <motion.div animate={{ opacity: hov ? 1 : 0, height: hov ? 28 : 0 }} transition={{ duration: 0.25 }}
+        style={{ position: "absolute", top: 0, right: 0, width: 2, background: skill.color, borderRadius: 1 }} />
       <div style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ fontFamily: "IBM Plex Mono", fontSize: 9, opacity: 0.35, letterSpacing: 2, marginBottom: 8, color: hov ? "#000" : "#fff" }}>
+        <motion.div animate={{ color: hov ? skill.color : "rgba(255,255,255,0.2)" }} transition={{ duration: 0.2 }}
+          style={{ fontFamily: "IBM Plex Mono", fontSize: 9, letterSpacing: 2, marginBottom: 10 }}>
           {String(i + 1).padStart(2, "0")}
-        </div>
-        <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 17, letterSpacing: 0.5, color: hov ? "#000" : "#fff" }}>
-          {skill}
-        </div>
+        </motion.div>
+        <motion.div animate={{ color: hov ? "#fff" : "rgba(255,255,255,0.75)" }} transition={{ duration: 0.2 }}
+          style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 17, letterSpacing: 0.5 }}>
+          {skill.name}
+        </motion.div>
+        <motion.div animate={{ width: hov ? "100%" : "0%", opacity: hov ? 1 : 0 }} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          style={{ height: 2, background: skill.color, borderRadius: 1, marginTop: 12 }} />
       </div>
     </motion.div>
   );
@@ -660,7 +868,7 @@ const ACH = [
 
 function Achievements() {
   return (
-    <section style={{ padding: "120px 80px", position: "relative", zIndex: 10 }}>
+    <section id="achievements" style={{ padding: "120px 80px", position: "relative", zIndex: 10 }}>
       <div style={{ maxWidth: 1160, margin: "0 auto" }}>
         <FU>
           <div style={{ marginBottom: 72 }}>
