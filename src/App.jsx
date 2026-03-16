@@ -278,12 +278,20 @@ function Hero({ onReveal }) {
   const [clicked, setClicked] = useState(false);
   const [morphed, setMorphed] = useState(false);
 
-  const handleClick = () => {
-    if (clicked) return;
-    setClicked(true);
-    setTimeout(() => setMorphed(true), 900);
-    setTimeout(() => onReveal(), 1800);
-  };
+  useEffect(() => {
+  document.body.style.overflow = "hidden";
+  return () => { document.body.style.overflow = ""; };
+}, []);
+
+const handleClick = () => {
+  if (clicked) return;
+  setClicked(true);
+  setTimeout(() => setMorphed(true), 900);
+  setTimeout(() => {
+    document.body.style.overflow = "";
+    onReveal();
+  }, 1800);
+};
 
   return (
     <motion.section
@@ -561,14 +569,27 @@ function ProjectModal({ project, onClose }) {
   const screens = project.screens;
 
   useEffect(() => {
+    document.body.style.overflow = "hidden";
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
       if (e.key === "ArrowRight") goTo(slide + 1);
       if (e.key === "ArrowLeft") goTo(slide - 1);
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
   }, [slide]);
+
+  useEffect(() => {
+    if (screens.length <= 1) return;
+    const timer = setInterval(() => {
+      setDir(1);
+      setSlide(prev => (prev + 1) % screens.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [screens.length]);
 
   const goTo = (i) => {
     if (i < 0 || i >= screens.length) return;
@@ -867,18 +888,26 @@ function Skills() {
     <section id="skills" style={{ padding: "120px 80px", position: "relative", zIndex: 10 }}>
       <div style={{ maxWidth: 1160, margin: "0 auto" }}>
         <FU>
-          <div style={{ marginBottom: 72 }}>
+          <div style={{ marginBottom: 56 }}>
             <SL n="03" label="SKILLS" />
             <h2 style={{ fontFamily: "Bebas Neue", fontSize: "clamp(48px, 6.5vw, 100px)", lineHeight: 0.88, letterSpacing: 5, margin: 0 }}>
               TECH<br /><span style={{ color: LIME }}>STACK</span>
             </h2>
           </div>
         </FU>
+        <FU delay={0.1}>
+          <div style={{ display: "flex", gap: 28, marginBottom: 32, flexWrap: "wrap" }}>
+            {SKILL_GROUP_LABELS.map(g => (
+              <div key={g.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: g.color, boxShadow: `0 0 8px ${g.color}` }} />
+                <span style={{ fontFamily: "IBM Plex Mono", fontSize: 10, color: "rgba(255,255,255,0.35)", letterSpacing: 2 }}>{g.label}</span>
+              </div>
+            ))}
+          </div>
+        </FU>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 2 }}>
           {SKILLS.map((s, i) => (
-            <FU key={s} delay={i * 0.03}>
-              <SkillCell skill={s} i={i} />
-            </FU>
+            <SkillCell key={s.name} skill={s} i={i} />
           ))}
         </div>
       </div>
@@ -927,6 +956,15 @@ function Achievements() {
 /* ── Education ── */
 function Education() {
   const [activeCert, setActiveCert] = useState(null);
+
+  useEffect(() => {
+    if (activeCert) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [activeCert]);
 
   const CERTS = [
     {
