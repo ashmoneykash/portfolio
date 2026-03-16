@@ -13,6 +13,16 @@ import ngHome     from "./assets/nexgen/ng-home.png";
 import ngProducts from "./assets/nexgen/ng-products.png";
 import ngContact  from "./assets/nexgen/ng-contact.png";
 import ngLogin    from "./assets/nexgen/ng-login.png";
+import bsHome     from "./assets/bookaseat/bs-home.png";
+import bsEvents   from "./assets/bookaseat/bs-events.png";
+import bsLogin    from "./assets/bookaseat/bs-login.png";
+import bsProfile  from "./assets/bookaseat/bs-profile.png";
+import bsBookings from "./assets/bookaseat/bs-bookings.png";
+import bsAdmin    from "./assets/bookaseat/bs-admin.png";
+import fdLogin    from "./assets/financeboard/fd-login.png";
+import fdSignup   from "./assets/financeboard/fd-signup.png";
+import fdExpenses from "./assets/financeboard/fd-expenses.png";
+import fdInsights from "./assets/financeboard/fd-insights.png";
 import certPython from "./assets/cert-python.png";
 import certJava   from "./assets/cert-java.png";
 
@@ -500,8 +510,8 @@ const PROJECTS = [
     sub: "E-commerce Platform",
     tech: "Django · PostgreSQL · Redis",
     desc: "Full-featured e-commerce platform with real-time inventory management, Stripe payment integration, and an analytics dashboard tracking customer behavior.",
-    accent: LIME,
-    bg: "linear-gradient(145deg, #090f00 0%, #050a00 100%)",
+    accent: "#7c3aed",
+    bg: "linear-gradient(145deg, #0d0014 0%, #07000d 100%)",
     liveUrl: "https://nexgen-6whl.onrender.com/home/",
     githubUrl: "https://github.com/ashmoneykash/nexgen",
     screens: [
@@ -511,27 +521,37 @@ const PROJECTS = [
       { img: ngLogin,    label: "Login",    desc: "Secure member access portal with animated bg" },
     ],
   },
-  {
+{
     name: "FinanceBoard",
-    sub: "Expense Tracker",
-    tech: "Flask · SQLAlchemy · Chart.js",
-    desc: "Intelligent personal finance tracker with ML-powered spending insights and interactive charts.",
-    accent: VIOLET,
-    bg: "linear-gradient(145deg, #0b0014 0%, #06000c 100%)",
+    sub: "Personal Finance Dashboard",
+    tech: "Python · PyQt5 · Flask · SQLAlchemy",
+    desc: "Full-stack desktop finance dashboard with expense tracking, category-wise pie and bar chart visualizations, and a secure per-user login system.",
+    accent: "#00c896",
+    bg: "linear-gradient(145deg, #001a12 0%, #000d09 100%)",
     liveUrl: null,
     githubUrl: "https://github.com/ashmoneykash/finance-dashboard",
-    screens: [],
+    screens: [
+      { img: fdExpenses, label: "Expenses", desc: "Add and view recent transactions by category" },
+      { img: fdInsights, label: "Insights", desc: "Pie and bar chart breakdowns of spending patterns" },
+    ],
   },
   {
-    name: "EVBoard",
-    sub: "EV Data Dashboard",
-    tech: "Python · Pandas · Plotly",
-    desc: "Interactive analytics for EV market data with real-time trend analysis and filterable charts.",
-    accent: "#00d4ff",
-    bg: "linear-gradient(145deg, #00101a 0%, #000d14 100%)",
+    name: "BookASeat",
+    sub: "Movie & Event Booking Platform",
+    tech: "Django · SQLite · Bootstrap",
+    desc: "Full-stack ticket booking platform inspired by BookMyShow. Browse movies and events, select seats, and complete bookings through a secure authentication system.",
+    accent: "#e63950",
+    bg: "linear-gradient(145deg, #1a0008 0%, #0d0004 100%)",
     liveUrl: null,
-    githubUrl: "https://github.com/ashmoneykash/DATA-SCIENCE-PROJECT",
-    screens: [],
+    githubUrl: "https://github.com/ashmoneykash/bookaseat",
+    screens: [
+      { img: bsHome,     label: "Home",      desc: "Landing page with featured movies and upcoming events" },
+      { img: bsEvents,   label: "Events",    desc: "Browse all movies and events with filters" },
+      { img: bsLogin,    label: "Login",     desc: "Secure authentication portal for users" },
+      { img: bsProfile,  label: "Profile",   desc: "User profile with booking history and settings" },
+      { img: bsBookings, label: "Bookings",  desc: "Manage and view all your active bookings" },
+      { img: bsAdmin,    label: "Admin",     desc: "Admin dashboard for managing events and users" },
+    ],
   },
 ];
 
@@ -603,12 +623,16 @@ function ProjectModal({ project, onClose }) {
                   style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }} />
               </AnimatePresence>
               {slide > 0 && (
-                <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.94 }} onClick={() => goTo(slide - 1)}
-                  style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", width: 44, height: 44, color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)" }}>←</motion.button>
+                <button onClick={() => goTo(slide - 1)}
+                  style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", width: 44, height: 44, color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)", transition: "transform 0.2s, background 0.2s" }}
+                  onMouseEnter={e => e.currentTarget.style.transform = "translateY(-50%) scale(1.08)"}
+                  onMouseLeave={e => e.currentTarget.style.transform = "translateY(-50%)"}>←</button>
               )}
               {slide < screens.length - 1 && (
-                <motion.button whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.94 }} onClick={() => goTo(slide + 1)}
-                  style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", width: 44, height: 44, color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)" }}>→</motion.button>
+                <button onClick={() => goTo(slide + 1)}
+                  style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", width: 44, height: 44, color: "#fff", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)", transition: "transform 0.2s, background 0.2s" }}
+                  onMouseEnter={e => e.currentTarget.style.transform = "translateY(-50%) scale(1.08)"}
+                  onMouseLeave={e => e.currentTarget.style.transform = "translateY(-50%)"}>→</button>
               )}
               <motion.div key={`lbl-${slide}`} initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
                 style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "40px 24px 20px", background: "linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%)" }}>
@@ -620,7 +644,7 @@ function ProjectModal({ project, onClose }) {
           <div style={{ padding: "32px 28px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <div>
               <div style={{ fontFamily: "IBM Plex Mono", fontSize: 10, color: `${project.accent}88`, letterSpacing: 2, marginBottom: 10 }}>{project.tech}</div>
-              <h2 style={{ fontFamily: "Bebas Neue", fontSize: 50, letterSpacing: 5, margin: "0 0 4px", color: "#fff", lineHeight: 1 }}>{project.name}</h2>
+              <h2 style={{ fontFamily: "Bebas Neue", fontSize: "clamp(28px, 3.5vw, 46px)", letterSpacing: 5, margin: "0 0 4px", color: "#fff", lineHeight: 1 }}>{project.name}</h2>
               <div style={{ fontFamily: "Syne", fontWeight: 600, fontSize: 13, color: project.accent, marginBottom: 18 }}>{project.sub}</div>
               <p style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.5, marginBottom: 24 }}>{project.desc}</p>
               {screens.length > 0 && (
