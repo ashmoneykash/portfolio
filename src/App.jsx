@@ -279,9 +279,13 @@ function Hero({ onReveal }) {
   const [morphed, setMorphed] = useState(false);
 
   useEffect(() => {
-  document.body.style.overflow = "hidden";
-  return () => { document.body.style.overflow = ""; };
-}, []);
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden"; 
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
 
 const handleClick = () => {
   if (clicked) return;
@@ -289,6 +293,7 @@ const handleClick = () => {
   setTimeout(() => setMorphed(true), 900);
   setTimeout(() => {
     document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
     onReveal();
   }, 1800);
 };
