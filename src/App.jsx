@@ -25,6 +25,9 @@ import fdExpenses from "./assets/financeboard/fd-expenses.png";
 import fdInsights from "./assets/financeboard/fd-insights.png";
 import certPython from "./assets/cert-python.png";
 import certJava   from "./assets/cert-java.png";
+import certAutomata from "./assets/Automata.png";
+import certPrompt from "./assets/PromptEngineering.png";
+import certGenAI  from "./assets/NoCodeTools.png";
 
 /* ── Palette ── */
 const LIME = "#B8FF1A";
@@ -985,6 +988,27 @@ function Education() {
       date: "August 2025",
       img: certJava,
       color: "#00d4ff",
+    },
+    {
+      title: "Computational Theory: Language Principle & Finite Automata Theory",
+      issuer: "Infosys",
+      date: "August 2025",
+      img: certAutomata,
+      color: "#FF6B35",
+    },
+    {
+      title: "ChatGPT-4 Prompt Engineering: ChatGPT, Generative AI & LLM",
+      issuer: "Infosys",
+      date: "August 2025",
+      img: certPrompt,
+      color: "#A855F7",
+    },
+    {
+      title: "Build Generative AI Apps and Solutions with No-Code Tools",
+      issuer: "Infosys",
+      date: "August 2025",
+      img: certGenAI,
+      color: "#FFD60A",
     },
   ];
 
