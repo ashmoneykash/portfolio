@@ -264,7 +264,7 @@ function Nav({ show }) {
         })}
       </div>
       <motion.button
-        onClick={() => window.open("https://drive.google.com/file/d/1Fv2QDyPxeTayY3Qo9d73-rF2gWbFmnRO/view?usp=sharing", "_blank")}
+        onClick={() => window.open("https://drive.google.com/file/d/17yrLaUch45smcAgtSTJ4F9Y2pxYr2_da/view?usp=drive_link", "_blank")}
         whileHover={{ scale: 1.04, boxShadow: `0 0 24px ${LIME}55` }}
         whileTap={{ scale: 0.96 }}
         data-cur="Hire"
